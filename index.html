@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobile App Design — Exam Killer Guide</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --card: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+    --text: #f0f0f5;
+    --sub: #8888a0;
+    --accent: #7c6fff;
+    --green: #34d399;
+    --orange: #fb923c;
+    --pink: #f472b6;
+    --blue: #38bdf8;
+    --yellow: #fbbf24;
+    --red: #f87171;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(10,10,15,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; gap: 6px; overflow-x: auto; height: 52px; }
+  nav a { color: var(--sub); text-decoration: none; font-size: 12px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; padding: 6px 10px; border-radius: 6px; white-space: nowrap; transition: all .2s; }
+  nav a:hover, nav a.active { color: var(--text); background: var(--card); }
+  nav .logo { color: var(--accent); font-weight: 800; font-size: 14px; margin-right: 12px; white-space: nowrap; }
+
+  /* HERO */
+  .hero { text-align: center; padding: 72px 24px 48px; background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(124,111,255,0.15), transparent); }
+  .hero h1 { font-size: clamp(28px,5vw,52px); font-weight: 800; letter-spacing: -1px; background: linear-gradient(135deg, #fff 40%, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero p { color: var(--sub); font-size: 17px; margin-top: 12px; }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 24px; }
+  .badge { padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 700; letter-spacing: .5px; }
+
+  /* SECTIONS */
+  section { padding: 64px 24px; max-width: 1100px; margin: 0 auto; }
+  section + section { border-top: 1px solid var(--border); }
+  .sec-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .sec-title { font-size: clamp(22px,3.5vw,34px); font-weight: 800; letter-spacing: -.5px; margin-bottom: 8px; }
+  .sec-sub { color: var(--sub); font-size: 15px; margin-bottom: 36px; max-width: 640px; }
+
+  /* CARDS */
+  .grid { display: grid; gap: 16px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); }
+  .g4 { grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; transition: transform .2s, box-shadow .2s; }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,.4); }
+  .card .icon { font-size: 28px; margin-bottom: 10px; }
+  .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .card p { font-size: 14px; color: var(--sub); line-height: 1.6; }
+  .card ul { margin-top: 8px; padding-left: 16px; }
+  .card ul li { font-size: 13px; color: var(--sub); margin-bottom: 4px; }
+
+  /* FLOW */
+  .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .flow-step { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; flex: 1; min-width: 140px; }
+  .flow-step .num { font-size: 11px; font-weight: 700; letter-spacing: 1px; opacity: .6; text-transform: uppercase; margin-bottom: 4px; }
+  .flow-step h4 { font-size: 14px; font-weight: 700; }
+  .flow-step p { font-size: 12px; color: var(--sub); margin-top: 4px; }
+  .arrow { color: var(--sub); font-size: 20px; flex-shrink: 0; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { background: rgba(124,111,255,0.12); color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 10px 14px; text-align: left; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .method { font-family: monospace; font-weight: 700; font-size: 13px; }
+  .get { color: var(--green); }
+  .post { color: var(--blue); }
+  .put { color: var(--yellow); }
+  .delete { color: var(--red); }
+
+  /* CODE */
+  .code-block { background: #0d0d1a; border: 1px solid var(--border); border-radius: 12px; padding: 18px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; overflow-x: auto; line-height: 1.7; }
+  .code-block .kw { color: var(--pink); }
+  .code-block .fn { color: var(--blue); }
+  .code-block .str { color: var(--green); }
+  .code-block .cmt { color: var(--sub); font-style: italic; }
+  .code-block .type { color: var(--yellow); }
+
+  /* COMPARE */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width:600px){ .compare { grid-template-columns: 1fr; } }
+  .compare-card { border-radius: 14px; padding: 22px; border: 1px solid var(--border); }
+
+  /* HIGHLIGHT BOX */
+  .highlight { border-radius: 12px; padding: 18px 22px; margin: 16px 0; border-left: 4px solid; }
+  .hl-purple { background: rgba(124,111,255,.08); border-color: var(--accent); }
+  .hl-green { background: rgba(52,211,153,.08); border-color: var(--green); }
+  .hl-orange { background: rgba(251,146,60,.08); border-color: var(--orange); }
+  .hl-blue { background: rgba(56,189,248,.08); border-color: var(--blue); }
+  .hl-red { background: rgba(248,113,113,.08); border-color: var(--red); }
+  .highlight h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .highlight p, .highlight li { font-size: 13px; color: var(--sub); }
+  .highlight ul { padding-left: 16px; }
+
+  /* PILL */
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: .5px; margin: 2px; }
+
+  /* ACCORDION */
+  details { background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+  summary { padding: 16px 20px; cursor: pointer; font-weight: 700; font-size: 14px; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  summary::after { content: '+'; font-size: 18px; color: var(--sub); }
+  details[open] summary::after { content: '−'; }
+  details .detail-body { padding: 0 20px 18px; font-size: 14px; color: var(--sub); line-height: 1.7; }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content: ''; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: var(--border); }
+  .tl-item { position: relative; margin-bottom: 24px; }
+  .tl-item::before { content: ''; position: absolute; left: -24px; top: 6px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid; background: var(--bg); }
+  .tl-item h4 { font-size: 14px; font-weight: 700; }
+  .tl-item p { font-size: 13px; color: var(--sub); margin-top: 3px; }
+
+  /* STICKY NOTE */
+  .exam-tip { background: rgba(251,191,36,.06); border: 1px solid rgba(251,191,36,.25); border-radius: 12px; padding: 14px 18px; margin-top: 20px; }
+  .exam-tip .tip-label { font-size: 11px; font-weight: 800; color: var(--yellow); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .exam-tip p, .exam-tip li { font-size: 13px; color: #d4b87a; }
+  .exam-tip ul { padding-left: 16px; }
+
+  /* TAG */
+  .tag { display: inline-flex; align-items: center; gap: 6px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 4px 10px; font-size: 12px; font-weight: 600; margin: 3px; }
+
+  /* RESPONSIVE */
+  @media(max-width:700px){ .flow { flex-direction: column; } .arrow { transform: rotate(90deg); } }
+
+  /* DIVIDER */
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="logo">📱 MAD Exam</span>
+  <a href="#networking">Networking</a>
+  <a href="#restapi">REST API</a>
+  <a href="#json">JSON</a>
+  <a href="#firebase">Firebase</a>
+  <a href="#animation">Animation</a>
+  <a href="#crossplatform">Cross-Platform</a>
+  <a href="#emerging">Emerging Tech</a>
+  <a href="#testing">Testing</a>
+  <a href="#deployment">Deployment</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <p style="color:var(--accent);font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">CSE413 · Daffodil International University</p>
+  <h1>Mobile App Design<br>Exam Killer Guide 🚀</h1>
+  <p>Everything you need to ace tomorrow's final — visual, fast, exam-ready</p>
+  <div class="badge-row">
+    <span class="badge" style="background:rgba(124,111,255,.15);color:var(--accent)">🌐 Networking & APIs</span>
+    <span class="badge" style="background:rgba(52,211,153,.15);color:var(--green)">🎨 Animation & Motion</span>
+    <span class="badge" style="background:rgba(56,189,248,.15);color:var(--blue)">⚡ Cross-Platform</span>
+    <span class="badge" style="background:rgba(251,146,60,.15);color:var(--orange)">🔮 Emerging Tech</span>
+    <span class="badge" style="background:rgba(248,113,113,.15);color:var(--red)">🧪 Testing & Deployment</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ 1. NETWORKING ═══════════════════════════════════ -->
+<section id="networking">
+  <div class="sec-label" style="color:var(--accent)">Topic 1</div>
+  <div class="sec-title">Networking & APIs in Mobile Apps</div>
+  <div class="sec-sub">How mobile apps communicate with the internet, exchange data, and interact with external services.</div>
+
+  <!-- CORE CONCEPTS -->
+  <div class="grid g3" style="margin-bottom:28px">
+    <div class="card">
+      <div class="icon">🌐</div>
+      <h3 style="color:var(--accent)">Networking</h3>
+      <p>Enabling a mobile app to connect to the internet or other devices to exchange data, download files, and communicate with servers.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🔌</div>
+      <h3 style="color:var(--blue)">API Calls</h3>
+      <p>Apps interact with APIs (Application Programming Interfaces) through <strong>HTTP requests</strong> to access external services.</p>
+    </div>
+    <div class="card">
+      <div class="icon">📦</div>
+      <h3 style="color:var(--green)">Data Transfer</h3>
+      <p><strong>JSON</strong> (JavaScript Object Notation) is the most common data format used for mobile app data exchange.</p>
+    </div>
+  </div>
+
+  <!-- API TYPES -->
+  <h3 style="font-size:16px;margin-bottom:14px;color:var(--sub)">Types of APIs</h3>
+  <div class="grid g3" style="margin-bottom:28px">
+    <div class="card" style="border-color:rgba(124,111,255,.3)">
+      <div style="font-weight:800;color:var(--accent);margin-bottom:6px">REST</div>
+      <p>Most common. Uses HTTP methods. Stateless. Returns JSON/XML. <em>Used in most mobile apps.</em></p>
+    </div>
+    <div class="card">
+      <div style="font-weight:800;color:var(--sub);margin-bottom:6px">SOAP</div>
+      <p>XML-based. More rigid structure. Used in enterprise/legacy systems.</p>
+    </div>
+    <div class="card">
+      <div style="font-weight:800;color:var(--pink);margin-bottom:6px">GraphQL</div>
+      <p>Query language. Request exactly the data you need. Flexible, modern.</p>
+    </div>
+  </div>
+
+  <!-- HOW API WORKS FLOW -->
+  <h3 style="font-size:16px;margin-bottom:16px;color:var(--sub)">How an API Works — Step by Step</h3>
+  <div class="flow" style="margin-bottom:28px">
+    <div class="flow-step" style="border-color:rgba(124,111,255,.4)">
+      <div class="num" style="color:var(--accent)">Step 1</div>
+      <h4>Client Request</h4>
+      <p>Mobile app / browser sends HTTP request to API</p>
+    </div>
+    <div class="arrow">→</div>
+    <div class="flow-step" style="border-color:rgba(56,189,248,.4)">
+      <div class="num" style="color:var(--blue)">Step 2</div>
+      <h4>API Processing</h4>
+      <p>Validates API key/token, forwards to server</p>
+    </div>
+    <div class="arrow">→</div>
+    <div class="flow-step" style="border-color:rgba(52,211,153,.4)">
+      <div class="num" style="color:var(--green)">Step 3</div>
+      <h4>Server Processing</h4>
+      <p>Retrieves/updates data from database, prepares response</p>
+    </div>
+    <div class="arrow">→</div>
+    <div class="flow-step" style="border-color:rgba(251,146,60,.4)">
+      <div class="num" style="color:var(--orange)">Step 4</div>
+      <h4>Response</h4>
+      <p>JSON/XML returned. Success → data. Fail → error (404, 500)</p>
+    </div>
+  </div>
+
+  <div class="exam-tip">
+    <div class="tip-label">⚡ Exam Tip</div>
+    <ul>
+      <li>APIs are like <strong>tollbooths</strong> — they control access to external data/services</li>
+      <li>APIs can be <strong>public</strong> (open) or <strong>private</strong> (restricted)</li>
+      <li>Always require <strong>authentication</strong> (API key / token)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ 2. REST API ═══════════════════════════════════ -->
+<section id="restapi">
+  <div class="sec-label" style="color:var(--blue)">Topic 2</div>
+  <div class="sec-title">RESTful API Deep Dive</div>
+  <div class="sec-sub">The most important API style for mobile development — know every detail.</div>
+
+  <div class="grid g2" style="margin-bottom:28px">
+    <div>
+      <div class="highlight hl-purple">
+        <h4>Definition</h4>
+        <p>REST (Representational State Transfer) is an <strong>architectural style</strong> for APIs using HTTP requests to access and manipulate data.</p>
+      </div>
+      <div class="highlight hl-blue" style="margin-top:12px">
+        <h4>Key Characteristics</h4>
+        <ul style="padding-left:16px">
+          <li><strong>Stateless</strong> — each request is independent, no memory of previous requests</li>
+          <li><strong>Uses HTTP Methods</strong> — GET, POST, PUT, DELETE</li>
+          <li><strong>Returns JSON/XML</strong> — structured data format</li>
+          <li><strong>Resource-based URLs</strong> — /users, /products, /orders</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <h3 style="font-size:14px;color:var(--sub);margin-bottom:12px">HTTP METHODS TABLE</h3>
+      <table>
+        <tr><th>Method</th><th>Purpose</th><th>Example</th></tr>
+        <tr><td><span class="method get">GET</span></td><td>Retrieve data</td><td>Fetch product list</td></tr>
+        <tr><td><span class="method post">POST</span></td><td>Send new data</td><td>Create new user</td></tr>
+        <tr><td><span class="method put">PUT</span></td><td>Update existing</td><td>Edit user profile</td></tr>
+        <tr><td><span class="method delete">DELETE</span></td><td>Remove data</td><td>Delete a product</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Flutter HTTP Code -->
+  <h3 style="font-size:15px;margin-bottom:12px;color:var(--sub)">Making API Calls in Flutter (GET Request)</h3>
+  <div class="code-block" style="margin-bottom:16px">
+<span class="cmt">// 1. GET Request — Fetching data</span>
+<span class="kw">import</span> <span class="str">'package:http/http.dart'</span> <span class="kw">as</span> http;
+<span class="kw">import</span> <span class="str">'dart:convert'</span>;
+
+<span class="type">Future</span> <span class="fn">fetchData</span>() <span class="kw">async</span> {
+  <span class="kw">var</span> response = <span class="kw">await</span> http.<span class="fn">get</span>(Uri.<span class="fn">parse</span>(<span class="str">'https://jsonplaceholder.typicode.com/posts/1'</span>));
+  <span class="kw">if</span> (response.statusCode == <span class="str">200</span>) {
+    <span class="kw">var</span> data = <span class="fn">jsonDecode</span>(response.body);
+    <span class="fn">print</span>(data);
+  } <span class="kw">else</span> {
+    <span class="fn">print</span>(<span class="str">'Failed to load data'</span>);  <span class="cmt">// Handle errors!</span>
+  }
+}</div>
+
+  <h3 style="font-size:15px;margin-bottom:12px;color:var(--sub)">Sending Data (POST Request)</h3>
+  <div class="code-block">
+<span class="cmt">// 2. POST Request — Sending data to API</span>
+<span class="type">Future</span> <span class="fn">sendData</span>() <span class="kw">async</span> {
+  <span class="kw">var</span> response = <span class="kw">await</span> http.<span class="fn">post</span>(
+    Uri.<span class="fn">parse</span>(<span class="str">'https://example.com/api/data'</span>),
+    headers: {<span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>},
+    body: <span class="fn">jsonEncode</span>({<span class="str">"name"</span>: <span class="str">"Alice"</span>, <span class="str">"email"</span>: <span class="str">"alice@example.com"</span>}),
+  );
+  <span class="fn">print</span>(response.body);
+}</div>
+
+  <div class="exam-tip">
+    <div class="tip-label">⚡ Exam Tip — Security</div>
+    <ul>
+      <li>Always use <strong>HTTPS</strong> (not HTTP) for secure communication</li>
+      <li>Authenticate requests with <strong>OAuth</strong> or <strong>JWT tokens</strong></li>
+      <li>Encrypt sensitive data before sending</li>
+      <li>Validate user inputs to prevent attacks (SQL injection, XSS)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ 3. JSON ═══════════════════════════════════ -->
+<section id="json">
+  <div class="sec-label" style="color:var(--green)">Topic 3</div>
+  <div class="sec-title">JSON — The Data Format</div>
+  <div class="sec-sub">The universal language of data exchange between mobile apps and servers.</div>
+
+  <div class="grid g2">
+    <div>
+      <div class="highlight hl-green" style="margin-bottom:16px">
+        <h4>What is JSON?</h4>
+        <p><strong>JavaScript Object Notation</strong> — a lightweight, text-based format to store and transmit structured data. It is:</p>
+        <ul>
+          <li>Human-readable</li>
+          <li>Easy to parse by machines</li>
+          <li>Language-independent</li>
+        </ul>
+      </div>
+      <div class="code-block">
+<span class="cmt">// JSON Structure Example</span>
+{
+  <span class="str">"person"</span>: {
+    <span class="str">"name"</span>: <span class="str">"John Doe"</span>,
+    <span class="str">"age"</span>: <span class="str">30</span>,
+    <span class="str">"city"</span>: <span class="str">"New York"</span>
+  },
+  <span class="str">"interests"</span>: [<span class="str">"coding"</span>, <span class="str">"music"</span>, <span class="str">"hiking"</span>]
+}</div>
+    </div>
+    <div>
+      <h3 style="font-size:14px;color:var(--sub);margin-bottom:12px">JSON PARSING IN FLUTTER</h3>
+      <div class="code-block">
+<span class="cmt">// JSON → Dart Object (Parsing)</span>
+<span class="kw">final</span> user = <span class="fn">jsonDecode</span>(jsonString) 
+              <span class="kw">as</span> <span class="type">Map</span>&lt;<span class="type">String</span>, <span class="kw">dynamic</span>&gt;;
+
+<span class="fn">print</span>(<span class="str">'Hello, ${user[<span class="str">"name"</span>]}!'</span>);
+<span class="fn">print</span>(<span class="str">'Email: ${user[<span class="str">"email"</span>]}'</span>);</div>
+      <div class="highlight hl-blue" style="margin-top:12px">
+        <h4>JSON Data Types</h4>
+        <ul>
+          <li><strong>String</strong>: <code>"hello"</code></li>
+          <li><strong>Number</strong>: <code>30</code>, <code>3.14</code></li>
+          <li><strong>Boolean</strong>: <code>true</code>, <code>false</code></li>
+          <li><strong>Array</strong>: <code>["a","b","c"]</code></li>
+          <li><strong>Object</strong>: <code>{"key": "value"}</code></li>
+          <li><strong>Null</strong>: <code>null</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ 4. FIREBASE ═══════════════════════════════════ -->
+<section id="firebase">
+  <div class="sec-label" style="color:var(--orange)">Topic 4</div>
+  <div class="sec-title">Firebase — Real-Time Communication</div>
+  <div class="sec-sub">Google's cloud platform for real-time data syncing across all connected devices.</div>
+
+  <div class="grid g2" style="margin-bottom:24px">
+    <div class="card" style="border-color:rgba(251,146,60,.3)">
+      <div class="icon">🔥</div>
+      <h3 style="color:var(--orange)">Firebase Realtime Database</h3>
+      <p>A <strong>NoSQL cloud database</strong> that syncs data in real-time across all connected clients (devices).</p>
+      <ul style="margin-top:10px;padding-left:16px">
+        <li style="font-size:13px;color:var(--sub)">Data stored as JSON tree</li>
+        <li style="font-size:13px;color:var(--sub)">Offline support built-in</li>
+        <li style="font-size:13px;color:var(--sub)">Listeners trigger on data change</li>
+      </ul>
+    </div>
+    <div class="card" style="border-color:rgba(52,211,153,.3)">
+      <div class="icon">⚡</div>
+      <h3 style="color:var(--green)">Real-Time Updates</h3>
+      <p>When data changes on the server, <strong>all connected devices are automatically updated</strong> — no polling needed.</p>
+      <div class="highlight hl-green" style="margin-top:12px;padding:10px 14px">
+        <p>Use case: Chat apps, live scores, collaborative editing, notifications</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Setup Steps -->
+  <h3 style="font-size:15px;margin-bottom:14px;color:var(--sub)">Firebase Setup in Flutter — 3 Steps</h3>
+  <div class="flow" style="margin-bottom:20px">
+    <div class="flow-step" style="border-color:rgba(251,146,60,.4)">
+      <div class="num" style="color:var(--orange)">Step 1</div>
+      <h4>Add Firebase</h4>
+      <p>Add Firebase to your Flutter project via Firebase Console</p>
+    </div>
+    <div class="arrow">→</div>
+    <div class="flow-step" style="border-color:rgba(251,146,60,.4)">
+      <div class="num" style="color:var(--orange)">Step 2</div>
+      <h4>Install Packages</h4>
+      <p>Add <code>firebase_core</code> and <code>firebase_database</code></p>
+    </div>
+    <div class="arrow">→</div>
+    <div class="flow-step" style="border-color:rgba(251,146,60,.4)">
+      <div class="num" style="color:var(--orange)">Step 3</div>
+      <h4>Initialize</h4>
+      <p>Call <code>Firebase.initializeApp()</code> in main()</p>
+    </div>
+  </div>
+
+  <div class="grid g2">
+    <div>
+      <h4 style="font-size:13px;color:var(--sub);margin-bottom:8px">WRITE DATA</h4>
+      <div class="code-block">
+<span class="kw">final</span> dbRef = FirebaseDatabase.instance.<span class="fn">ref</span>();
+
+<span class="kw">void</span> <span class="fn">addData</span>() {
+  dbRef.<span class="fn">child</span>(<span class="str">"users"</span>).<span class="fn">set</span>({
+    <span class="str">"name"</span>: <span class="str">"Alice"</span>,
+    <span class="str">"email"</span>: <span class="str">"alice@example.com"</span>
+  });
+}</div>
+    </div>
+    <div>
+      <h4 style="font-size:13px;color:var(--sub);margin-bottom:8px">READ DATA</h4>
+      <div class="code-block">
+dbRef.<span class="fn">child</span>(<span class="str">"users"</span>)
+  .<span class="fn">once</span>()
+  .<span class="fn">then</span>((snapshot) {
+    <span class="fn">print</span>(snapshot.snapshot.value);
+  });</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ 5. ANIMATION ═══════════════════════════════════ -->
+<section id="animation">
+  <div class="sec-label" style="color:var(--pink)">Topic 5</div>
+  <div class="sec-title">Advanced Visual & Motion Design in Flutter</div>
+  <div class="sec-sub">Custom themes, animations, microinteractions, and motion graphics using Flutter's animation framework.</div>
+
+  <!-- THEMES -->
+  <h3 style="font-size:16px;margin-bottom:14px">1. Custom Themes</h3>
+  <div class="grid g2" style="margin-bottom:28px">
+    <div>
+      <div class="highlight hl-purple" style="margin-bottom:12px">
+        <h4>ThemeData</h4>
+        <p>Flutter's <code>ThemeData</code> allows consistent theming across the entire app — colors, typography, shapes.</p>
+      </div>
+      <div class="code-block">
+<span class="kw">final</span> customTheme = <span class="type">ThemeData</span>(
+  primaryColor: Colors.deepPurple,
+  accentColor: Colors.teal,
+  scaffoldBackgroundColor: Colors.white,
+  textTheme: <span class="type">TextTheme</span>(
+    headline1: <span class="type">TextStyle</span>(fontSize: <span class="str">32</span>, fontWeight: FontWeight.bold),
+  ),
+);
+<span class="cmt">// Apply in MaterialApp:</span>
+<span class="type">MaterialApp</span>(theme: customTheme, home: <span class="type">MyHomePage</span>())</div>
+    </div>
+    <div>
+      <h3 style="font-size:14px;color:var(--sub);margin-bottom:10px">Animation Tools in Flutter</h3>
+      <div class="grid" style="gap:10px">
+        <div class="card" style="padding:14px">
+          <div style="font-weight:700;color:var(--pink);margin-bottom:4px">AnimationController</div>
+          <p style="font-size:13px">Controls animation lifecycle — start, stop, reverse. Needs a <code>vsync</code> provider.</p>
+        </div>
+        <div class="card" style="padding:14px">
+          <div style="font-weight:700;color:var(--pink);margin-bottom:4px">Tween&lt;T&gt;</div>
+          <p style="font-size:13px">Defines interpolation range — e.g., Tween(begin: 100, end: 200) for size animation.</p>
+        </div>
+        <div class="card" style="padding:14px">
+          <div style="font-weight:700;color:var(--pink);margin-bottom:4px">AnimatedBuilder</div>
+          <p style="font-size:13px">Rebuilds widget every animation frame. Efficient for complex animations.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOTION TOOLS -->
+  <h3 style="font-size:16px;margin-bottom:14px">2. Motion Graphics Tools (The Big 3)</h3>
+  <div class="grid g3" style="margin-bottom:28px">
+    <div class="card" style="border-color:rgba(244,114,182,.3)">
+      <div style="font-size:24px;margin-bottom:8px">📦</div>
+      <h3 style="color:var(--pink)">AnimatedContainer</h3>
+      <p>Implicitly animates changes to <strong>size, color, padding</strong> of a container. Just change the value!</p>
+      <div class="pill" style="background:rgba(244,114,182,.1);color:var(--pink);margin-top:8px">Implicit Animation</div>
+    </div>
+    <div class="card" style="border-color:rgba(124,111,255,.3)">
+      <div style="font-size:24px;margin-bottom:8px">👁️</div>
+      <h3 style="color:var(--accent)">AnimatedOpacity</h3>
+      <p>Creates smooth <strong>fade-in and fade-out</strong> transitions for widgets using opacity 0.0 → 1.0.</p>
+      <div class="pill" style="background:rgba(124,111,255,.1);color:var(--accent);margin-top:8px">Fade Transitions</div>
+    </div>
+    <div class="card" style="border-color:rgba(52,211,153,.3)">
+      <div style="font-size:24px;margin-bottom:8px">🦸</div>
+      <h3 style="color:var(--green)">Hero Animation</h3>
+      <p>Enables <strong>seamless transitions</strong> of shared elements between screens. Same tag = same element.</p>
+      <div class="pill" style="background:rgba(52,211,153,.1);color:var(--green);margin-top:8px">Screen Transitions</div>
+    </div>
+  </div>
+
+  <!-- HERO CODE -->
+  <h3 style="font-size:15px;margin-bottom:12px;color:var(--sub)">Hero Animation — How it Works</h3>
+  <div class="flow" style="margin-bottom:20px">
+    <div class="flow-step">
+      <div class="num">Screen 1</div>
+      <h4>Wrap with Hero</h4>
+      <p>tag: 'imageHero' + small image</p>
+    </div>
+    <div class="arrow">→</div>
+    <div class="flow-step">
+      <div class="num">Navigate</div>
+      <h4>Navigator.push()</h4>
+      <p>Flutter auto-animates the transition</p>
+    </div>
+    <div class="arrow">→</div>
+    <div class="flow-step">
+      <div class="num">Screen 2</div>
+      <h4>Same Hero tag</h4>
+      <p>tag: 'imageHero' + larger image</p>
+    </div>
+  </div>
+
+  <!-- MICROINTERACTIONS -->
+  <h3 style="font-size:16px;margin-bottom:14px">3. Microinteractions</h3>
+  <div class="grid g3" style="margin-bottom:20px">
+    <div class="card">
+      <h3 style="color:var(--yellow)">Button Effects</h3>
+      <p>Use <strong>InkWell</strong> for ripple effect on tap. Provides immediate visual feedback.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--blue)">Loading Spinners</h3>
+      <p>Use <strong>CircularProgressIndicator</strong> to maintain attention during wait times.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--green)">Swipe Animations</h3>
+      <p>Use <strong>GestureDetector</strong> for swipe-to-refresh, drag, and dismiss patterns.</p>
+    </div>
+  </div>
+
+  <!-- RIVE -->
+  <div class="highlight hl-orange">
+    <h4>Rive Integration (formerly Flare)</h4>
+    <p>Allows integrating <strong>complex, interactive motion graphics</strong> designed in the Rive editor. Use <code>RiveAnimation.asset('animation.riv')</code> to display in Flutter.</p>
+  </div>
+
+  <!-- BEST PRACTICES -->
+  <div class="grid g2" style="margin-top:20px">
+    <div class="highlight hl-green">
+      <h4>Performance Best Practices</h4>
+      <ul>
+        <li>Use <strong>const constructors</strong> where possible</li>
+        <li>Avoid unnecessary animations in large lists</li>
+        <li>Optimize widget rebuilds</li>
+      </ul>
+    </div>
+    <div class="highlight hl-blue">
+      <h4>Accessibility Best Practices</h4>
+      <ul>
+        <li>Provide alternatives for reduced motion</li>
+        <li>Use <code>MediaQuery.of(context).disableAnimations</code></li>
+        <li>Test with accessibility tools</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ 6. CROSS-PLATFORM ═══════════════════════════════════ -->
+<section id="crossplatform">
+  <div class="sec-label" style="color:var(--blue)">Topic 6</div>
+  <div class="sec-title">Cross-Platform Development</div>
+  <div class="sec-sub">Write once, run anywhere — Flutter & React Native compared.</div>
+
+  <!-- FLUTTER vs REACT NATIVE -->
+  <div class="compare" style="margin-bottom:28px">
+    <div class="compare-card" style="background:rgba(56,189,248,.06);border-color:rgba(56,189,248,.3)">
+      <div style="font-size:22px;margin-bottom:8px">🐦</div>
+      <h3 style="color:var(--blue);margin-bottom:10px">Flutter</h3>
+      <ul style="padding-left:16px;font-size:13px;color:var(--sub);line-height:1.8">
+        <li>Created by <strong style="color:var(--text)">Google</strong></li>
+        <li>Language: <strong style="color:var(--text)">Dart</strong></li>
+        <li>Widget-based UI framework</li>
+        <li>Renders with <strong style="color:var(--text)">Skia engine</strong> (close to native speed)</li>
+        <li>High performance, custom UI</li>
+        <li>Targets: Mobile, Web, Desktop</li>
+        <li>Hot reload ✅</li>
+      </ul>
+    </div>
+    <div class="compare-card" style="background:rgba(52,211,153,.06);border-color:rgba(52,211,153,.3)">
+      <div style="font-size:22px;margin-bottom:8px">⚛️</div>
+      <h3 style="color:var(--green);margin-bottom:10px">React Native</h3>
+      <ul style="padding-left:16px;font-size:13px;color:var(--sub);line-height:1.8">
+        <li>Created by <strong style="color:var(--text)">Facebook (Meta)</strong></li>
+        <li>Language: <strong style="color:var(--text)">JavaScript + React (.jsx)</strong></li>
+        <li>Bridges native components</li>
+        <li>Uses <strong style="color:var(--text)">JavaScript Bridge</strong> (slight overhead)</li>
+        <li>Large community, native feel</li>
+        <li>Better native integrations</li>
+        <li>Hot reload ✅</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <table style="margin-bottom:24px">
+    <tr><th>Factor</th><th>Flutter</th><th>React Native</th></tr>
+    <tr><td>Performance</td><td><span style="color:var(--green)">⚡ Near-native (Skia)</span></td><td><span style="color:var(--yellow)">🟡 JS Bridge overhead</span></td></tr>
+    <tr><td>Dev Speed</td><td>Fast</td><td>Fast</td></tr>
+    <tr><td>UI Consistency</td><td><span style="color:var(--green)">✅ Custom, consistent</span></td><td><span style="color:var(--blue)">Native look per OS</span></td></tr>
+    <tr><td>Cost</td><td colspan="2" style="text-align:center;color:var(--green)">Both more cost-effective than native</td></tr>
+    <tr><td>Best For</td><td>High perf, custom UI, web+desktop</td><td>JS devs, native integrations</td></tr>
+  </table>
+
+  <!-- ADVANTAGES & CHALLENGES -->
+  <div class="grid g2">
+    <div class="highlight hl-green">
+      <h4>✅ Advantages</h4>
+      <ul>
+        <li>Code reusability (write once, run anywhere)</li>
+        <li>Faster development & reduced costs</li>
+        <li>Single development team</li>
+        <li>Consistent UI/UX across platforms</li>
+        <li>Hot reload speeds up debugging</li>
+      </ul>
+    </div>
+    <div class="highlight hl-red">
+      <h4>❌ Challenges</h4>
+      <ul>
+        <li>Performance may not match native apps</li>
+        <li>Limited access to platform-specific features</li>
+        <li>UI inconsistencies due to different OS behaviors</li>
+        <li>Dependency on third-party libraries</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="exam-tip" style="margin-top:20px">
+    <div class="tip-label">⚡ Exam Tip — When to Choose</div>
+    <ul>
+      <li><strong>Choose Flutter</strong> → High performance, custom UI, targeting web & desktop too</li>
+      <li><strong>Choose React Native</strong> → You prefer JavaScript, need large community, better native integrations</li>
+      <li><strong>Choose Native</strong> → Maximum performance, full OS feature access, complex platform-specific UI</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ 7. EMERGING TECH ═══════════════════════════════════ -->
+<section id="emerging">
+  <div class="sec-label" style="color:var(--orange)">Topic 7</div>
+  <div class="sec-title">Emerging Trends in Mobile App Design</div>
+  <div class="sec-sub">AR, VR, Foldable Devices, and Voice User Interfaces — the future of mobile.</div>
+
+  <div class="grid g2" style="margin-bottom:28px">
+    <!-- AR -->
+    <div class="card" style="border-color:rgba(251,146,60,.3)">
+      <div style="font-size:28px;margin-bottom:8px">🔍</div>
+      <h3 style="color:var(--orange)">Augmented Reality (AR)</h3>
+      <p style="margin-bottom:10px">Overlays digital content onto the <strong>real world</strong>.</p>
+      <div style="font-size:13px;color:var(--sub)">
+        <strong style="color:var(--text)">Real Examples:</strong>
+        <ul style="padding-left:16px;margin-top:4px">
+          <li>Pokémon Go (AR gaming)</li>
+          <li>Google Maps Live View (AR navigation)</li>
+          <li>IKEA Place (virtual furniture try-on)</li>
+        </ul>
+      </div>
+      <div style="margin-top:12px;font-size:13px">
+        <strong style="color:var(--orange)">Flutter Plugins:</strong>
+        <span class="tag">arcore_flutter_plugin (Android)</span>
+        <span class="tag">arkit_flutter (iOS)</span>
+      </div>
+    </div>
+
+    <!-- VR -->
+    <div class="card" style="border-color:rgba(124,111,255,.3)">
+      <div style="font-size:28px;margin-bottom:8px">🥽</div>
+      <h3 style="color:var(--accent)">Virtual Reality (VR)</h3>
+      <p style="margin-bottom:10px">Creates a fully <strong>immersive digital environment</strong>.</p>
+      <div style="font-size:13px;color:var(--sub)">
+        <strong style="color:var(--text)">Real Examples:</strong>
+        <ul style="padding-left:16px;margin-top:4px">
+          <li>Oculus Quest (VR gaming)</li>
+          <li>Beat Saber (rhythm VR game)</li>
+          <li>Medical/military training simulations</li>
+          <li>Virtual real estate tours</li>
+        </ul>
+      </div>
+      <div style="margin-top:12px;font-size:13px">
+        <strong style="color:var(--accent)">Flutter Plugin:</strong>
+        <span class="tag">flutter_unity_widget</span>
+      </div>
+    </div>
+
+    <!-- FOLDABLE -->
+    <div class="card" style="border-color:rgba(56,189,248,.3)">
+      <div style="font-size:28px;margin-bottom:8px">📱</div>
+      <h3 style="color:var(--blue)">Foldable Devices</h3>
+      <p style="margin-bottom:10px">New screen form factors requiring <strong>adaptive layouts</strong>.</p>
+      <div style="font-size:13px;color:var(--sub)">
+        <strong style="color:var(--text)">Key Challenges:</strong>
+        <ul style="padding-left:16px;margin-top:4px">
+          <li>Adaptive layouts for different screen sizes</li>
+          <li>Seamless transitions between folded/unfolded</li>
+          <li>Enhanced multitasking capabilities</li>
+        </ul>
+      </div>
+      <div style="margin-top:12px;font-size:13px">
+        <strong style="color:var(--blue)">Flutter Tools:</strong>
+        <span class="tag">MediaQuery</span>
+        <span class="tag">LayoutBuilder</span>
+      </div>
+    </div>
+
+    <!-- VUI -->
+    <div class="card" style="border-color:rgba(52,211,153,.3)">
+      <div style="font-size:28px;margin-bottom:8px">🎤</div>
+      <h3 style="color:var(--green)">Voice User Interface (VUI)</h3>
+      <p style="margin-bottom:10px">Users interact with apps using <strong>voice commands</strong>.</p>
+      <div style="font-size:13px;color:var(--sub)">
+        <strong style="color:var(--text)">Key Concepts:</strong>
+        <ul style="padding-left:16px;margin-top:4px">
+          <li><strong>NLP</strong> — Natural Language Processing</li>
+          <li>Conversational flow design</li>
+          <li>Intent recognition</li>
+        </ul>
+        <strong style="color:var(--text)">Examples:</strong> Amazon Alexa, Google Assistant, Siri
+      </div>
+      <div style="margin-top:12px;font-size:13px">
+        <strong style="color:var(--green)">Flutter Plugin:</strong>
+        <span class="tag">speech_to_text</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHALLENGES TABLE -->
+  <h3 style="font-size:15px;margin-bottom:12px;color:var(--sub)">Design Challenges & Solutions</h3>
+  <table>
+    <tr><th>Challenge</th><th>Solution</th></tr>
+    <tr><td>High development costs (AR/VR)</td><td>Use cross-platform frameworks like Unity</td></tr>
+    <tr><td>Limited user adoption</td><td>Educate users through tutorials and demos</td></tr>
+    <tr><td>Performance on low-end devices</td><td>Optimize assets, use adaptive rendering</td></tr>
+    <tr><td>Motion sickness in VR</td><td>Limit fast movement, add comfort settings</td></tr>
+    <tr><td>Foldable layout breaks</td><td>Use MediaQuery + LayoutBuilder for responsive UI</td></tr>
+  </table>
+
+  <!-- CASE STUDIES -->
+  <h3 style="font-size:16px;margin-top:24px;margin-bottom:14px">Case Studies — Know These!</h3>
+  <div class="grid g2">
+    <div class="highlight hl-orange">
+      <h4>Pokémon Go (AR) — Case Study 1</h4>
+      <p>Combines AR + location-based gaming. Encourages physical activity. <strong>Challenges:</strong> Battery drain, GPS accuracy.</p>
+    </div>
+    <div class="highlight hl-blue">
+      <h4>IKEA Place (AR) — Case Study 2</h4>
+      <p>Visualize furniture in your home. Enhances shopping. <strong>Challenges:</strong> Accurate scaling and lighting.</p>
+    </div>
+    <div class="highlight hl-purple">
+      <h4>Beat Saber (VR) — Case Study 3</h4>
+      <p>Rhythm-based VR game with motion controllers. <strong>Challenges:</strong> Motion sickness, hardware requirements.</p>
+    </div>
+    <div class="highlight hl-green">
+      <h4>Google Assistant (VUI) — Case Study 4</h4>
+      <p>Voice-based assistant for reminders, music, smart devices. <strong>Challenges:</strong> Understanding diverse accents and dialects.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ 8. TESTING ═══════════════════════════════════ -->
+<section id="testing">
+  <div class="sec-label" style="color:var(--red)">Topic 8</div>
+  <div class="sec-title">App Testing</div>
+  <div class="sec-sub">Critical phase ensuring the app is functional, user-friendly, and stable under all conditions.</div>
+
+  <!-- TESTING HIERARCHY -->
+  <div class="grid g2" style="margin-bottom:28px">
+    <div>
+      <h3 style="font-size:15px;margin-bottom:14px;color:var(--sub)">Functional Testing</h3>
+      <div class="timeline">
+        <div class="tl-item" style="">
+          <div class="tl-item::before" style="background:var(--accent)"></div>
+          <h4 style="color:var(--accent)">Unit Testing</h4>
+          <p>Tests individual functions/components in isolation. Early bug detection.</p>
+        </div>
+        <div class="tl-item">
+          <h4 style="color:var(--blue)">Integration Testing</h4>
+          <p>Tests how components work together (Component, System, End-to-End).</p>
+        </div>
+        <div class="tl-item">
+          <h4 style="color:var(--green)">System Testing</h4>
+          <p>End-to-end, Smoke, Sanity, Monkey Testing.</p>
+        </div>
+        <div class="tl-item">
+          <h4 style="color:var(--yellow)">Acceptance Testing</h4>
+          <p>Alpha, Beta, User Acceptance Testing (UAT).</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3 style="font-size:15px;margin-bottom:14px;color:var(--sub)">Non-Functional Testing</h3>
+      <div class="grid" style="gap:10px">
+        <div class="card" style="padding:12px">
+          <h3 style="color:var(--red);font-size:14px">Security Testing</h3>
+          <p style="font-size:12px">Penetration, Fuzz, Access Control testing</p>
+        </div>
+        <div class="card" style="padding:12px">
+          <h3 style="color:var(--orange);font-size:14px">Performance Testing</h3>
+          <p style="font-size:12px">Load, Stress, Volume, Scalability, Endurance</p>
+        </div>
+        <div class="card" style="padding:12px">
+          <h3 style="color:var(--blue);font-size:14px">Usability Testing</h3>
+          <p style="font-size:12px">Exploratory Testing, UI Testing</p>
+        </div>
+        <div class="card" style="padding:12px">
+          <h3 style="color:var(--green);font-size:14px">Compatibility Testing</h3>
+          <p style="font-size:12px">Cross Browser, Cross Platform Testing</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UNIT TEST CODE -->
+  <h3 style="font-size:15px;margin-bottom:12px;color:var(--sub)">Unit Test Example — Flutter</h3>
+  <div class="code-block" style="margin-bottom:20px">
+<span class="cmt">// Function to test:</span>
+<span class="type">bool</span> <span class="fn">isPrime</span>(<span class="type">int</span> number) {
+  <span class="kw">if</span> (number &lt;= <span class="str">1</span>) <span class="kw">return</span> <span class="kw">false</span>;
+  <span class="kw">for</span> (<span class="type">int</span> i = <span class="str">2</span>; i &lt; number; i++) {
+    <span class="kw">if</span> (number % i == <span class="str">0</span>) <span class="kw">return</span> <span class="kw">false</span>;
+  }
+  <span class="kw">return</span> <span class="kw">true</span>;
+}
+
+<span class="cmt">// Unit Test:</span>
+<span class="kw">void</span> <span class="fn">main</span>() {
+  <span class="fn">test</span>(<span class="str">'Prime number test'</span>, () {
+    <span class="fn">expect</span>(<span class="fn">isPrime</span>(<span class="str">2</span>), <span class="kw">true</span>);
+    <span class="fn">expect</span>(<span class="fn">isPrime</span>(<span class="str">4</span>), <span class="kw">false</span>);
+    <span class="fn">expect</span>(<span class="fn">isPrime</span>(<span class="str">11</span>), <span class="kw">true</span>);
+    <span class="fn">expect</span>(<span class="fn">isPrime</span>(<span class="str">1</span>), <span class="kw">false</span>);
+  });
+}</div>
+
+  <!-- UI TEST -->
+  <h3 style="font-size:15px;margin-bottom:12px;color:var(--sub)">UI Test Example — Widget Testing</h3>
+  <div class="code-block" style="margin-bottom:20px">
+<span class="cmt">// Test: Login button navigates to Home Screen</span>
+<span class="fn">testWidgets</span>(<span class="str">'Login button navigates to home'</span>, (<span class="type">WidgetTester</span> tester) <span class="kw">async</span> {
+  <span class="kw">await</span> tester.<span class="fn">pumpWidget</span>(<span class="type">MyApp</span>());
+  <span class="kw">final</span> loginButton = find.<span class="fn">text</span>(<span class="str">'Login'</span>);
+  <span class="kw">await</span> tester.<span class="fn">tap</span>(loginButton);
+  <span class="kw">await</span> tester.<span class="fn">pumpAndSettle</span>();
+  <span class="fn">expect</span>(find.<span class="fn">text</span>(<span class="str">'Home Screen'</span>), findsOneWidget);  <span class="cmt">// ✅ Pass</span>
+});</div>
+
+  <!-- DEBUGGING -->
+  <h3 style="font-size:16px;margin-bottom:14px">Debugging Strategies & Tools</h3>
+  <div class="grid g3" style="margin-bottom:20px">
+    <div class="card">
+      <h3 style="color:var(--yellow);font-size:14px">Reproduce</h3>
+      <p style="font-size:13px">Identify exact steps to trigger the bug.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--orange);font-size:14px">Isolate</h3>
+      <p style="font-size:13px">Narrow down to specific function/component causing the issue.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--green);font-size:14px">Fix & Verify</h3>
+      <p style="font-size:13px">Apply the fix and run tests to confirm resolution.</p>
+    </div>
+  </div>
+
+  <div class="grid g3">
+    <div class="highlight hl-purple">
+      <h4>Logcat (Android)</h4>
+      <p>Command-line tool for viewing system logs and debugging Android apps.</p>
+    </div>
+    <div class="highlight hl-blue">
+      <h4>Xcode Debugger (iOS)</h4>
+      <p>Powerful debugger for iOS apps, integrated into Xcode.</p>
+    </div>
+    <div class="highlight hl-green">
+      <h4>Flutter DevTools</h4>
+      <p>Suite for Flutter apps — performance profiling and widget inspection.</p>
+    </div>
+  </div>
+
+  <!-- PERFORMANCE TESTING -->
+  <div class="highlight hl-orange" style="margin-top:20px">
+    <h4>Performance Testing</h4>
+    <ul>
+      <li>Tests app under different conditions (low memory, high CPU, heavy load)</li>
+      <li>Tools: <strong>JMeter</strong>, <strong>Firebase Performance Monitoring</strong></li>
+      <li>If API takes &gt; 2 seconds → needs optimization</li>
+      <li>If app crashes under load → memory leak or inefficiency</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ 9. DEPLOYMENT ═══════════════════════════════════ -->
+<section id="deployment">
+  <div class="sec-label" style="color:var(--green)">Topic 9</div>
+  <div class="sec-title">App Deployment & Maintenance</div>
+  <div class="sec-sub">Getting your app to users — Google Play Store and Apple App Store submission process.</div>
+
+  <div class="compare" style="margin-bottom:28px">
+    <!-- GOOGLE PLAY -->
+    <div class="compare-card" style="background:rgba(52,211,153,.05);border-color:rgba(52,211,153,.3)">
+      <div style="font-size:24px;margin-bottom:8px">🤖</div>
+      <h3 style="color:var(--green);margin-bottom:12px">Google Play Store</h3>
+      <div class="timeline">
+        <div class="tl-item">
+          <h4 style="font-size:13px">1. Prepare the App</h4>
+          <p>Test thoroughly. Create signed APK or App Bundle.</p>
+        </div>
+        <div class="tl-item">
+          <h4 style="font-size:13px">2. Create Developer Account</h4>
+          <p>One-time fee: <strong style="color:var(--green)">$25</strong></p>
+        </div>
+        <div class="tl-item">
+          <h4 style="font-size:13px">3. Upload the App</h4>
+          <p>App name, description, screenshots, APK/Bundle</p>
+        </div>
+        <div class="tl-item">
+          <h4 style="font-size:13px">4. Set Pricing & Distribution</h4>
+          <p>Free or paid. Select target countries.</p>
+        </div>
+        <div class="tl-item">
+          <h4 style="font-size:13px">5. Submit for Review</h4>
+          <p>Google reviews for policy compliance.</p>
+        </div>
+      </div>
+    </div>
+    <!-- APPLE APP STORE -->
+    <div class="compare-card" style="background:rgba(56,189,248,.05);border-color:rgba(56,189,248,.3)">
+      <div style="font-size:24px;margin-bottom:8px">🍎</div>
+      <h3 style="color:var(--blue);margin-bottom:12px">Apple App Store</h3>
+      <div class="timeline">
+        <div class="tl-item">
+          <h4 style="font-size:13px">1. Prepare the App</h4>
+          <p>Test on real devices. Create archive using <strong>Xcode</strong>.</p>
+        </div>
+        <div class="tl-item">
+          <h4 style="font-size:13px">2. Create Developer Account</h4>
+          <p>Annual fee: <strong style="color:var(--blue)">$99/year</strong></p>
+        </div>
+        <div class="tl-item">
+          <h4 style="font-size:13px">3. Upload the App</h4>
+          <p>Use Xcode or <strong>App Store Connect</strong></p>
+        </div>
+        <div class="tl-item">
+          <h4 style="font-size:13px">4. Set Pricing & Availability</h4>
+          <p>Choose pricing tiers. Select target regions.</p>
+        </div>
+        <div class="tl-item">
+          <h4 style="font-size:13px">5. Submit for Review</h4>
+          <p>Apple reviews for HIG compliance. Stricter than Google.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GUIDELINES TABLE -->
+  <h3 style="font-size:15px;margin-bottom:12px;color:var(--sub)">App Store Guidelines — Quick Comparison</h3>
+  <table style="margin-bottom:24px">
+    <tr><th>Guideline</th><th>Google Play</th><th>Apple App Store</th></tr>
+    <tr><td>Review Time</td><td>Hours to days</td><td>1-3 days (stricter)</td></tr>
+    <tr><td>Developer Fee</td><td>$25 one-time</td><td>$99/year</td></tr>
+    <tr><td>Design Guide</td><td>Material Design</td><td>Human Interface Guidelines (HIG)</td></tr>
+    <tr><td>Content Policy</td><td>No malware, accurate metadata</td><td>Stable, no crashes, clear metadata</td></tr>
+    <tr><td>Testing Required</td><td>Multiple Android versions</td><td>Real devices required</td></tr>
+  </table>
+
+  <!-- MONITORING -->
+  <h3 style="font-size:16px;margin-bottom:14px">Post-Deployment: Monitoring & Analytics</h3>
+  <div class="grid g2">
+    <div>
+      <h4 style="font-size:13px;color:var(--sub);margin-bottom:10px">MONITORING TOOLS</h4>
+      <div class="card" style="margin-bottom:10px;padding:14px">
+        <h3 style="color:var(--orange);font-size:14px">Firebase Performance Monitoring</h3>
+        <p style="font-size:13px">Tracks app performance metrics — startup time, network requests, slow rendering</p>
+      </div>
+      <div class="card" style="padding:14px">
+        <h3 style="color:var(--red);font-size:14px">Crashlytics</h3>
+        <p style="font-size:13px">Reports and analyzes app crashes in <strong>real-time</strong></p>
+      </div>
+    </div>
+    <div>
+      <h4 style="font-size:13px;color:var(--sub);margin-bottom:10px">ANALYTICS TOOLS</h4>
+      <div class="card" style="margin-bottom:10px;padding:14px">
+        <h3 style="color:var(--blue);font-size:14px">Google Analytics for Firebase</h3>
+        <p style="font-size:13px">Tracks user engagement, retention, and in-app behavior</p>
+      </div>
+      <div class="card" style="padding:14px">
+        <h3 style="color:var(--green);font-size:14px">Mixpanel</h3>
+        <p style="font-size:13px">Advanced analytics — user segmentation and funnel analysis</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="exam-tip" style="margin-top:24px">
+    <div class="tip-label">⚡ Final Exam Tips — Key Numbers to Remember</div>
+    <ul>
+      <li>Google Play one-time developer fee: <strong>$25</strong></li>
+      <li>Apple App Store annual fee: <strong>$99/year</strong></li>
+      <li>API response over <strong>2 seconds</strong> → needs optimization</li>
+      <li>REST API HTTP methods: <strong>GET, POST, PUT, DELETE</strong></li>
+      <li>Flutter uses <strong>Dart</strong> language; React Native uses <strong>JavaScript</strong></li>
+      <li>Firebase = <strong>NoSQL</strong> cloud database with real-time sync</li>
+      <li>Hero animation requires the <strong>same tag</strong> on both screens</li>
+      <li>JSON = Key-Value pairs enclosed in <strong>{ curly braces }</strong></li>
+    </ul>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div style="text-align:center;padding:48px 24px;border-top:1px solid var(--border);color:var(--sub)">
+  <div style="font-size:28px;margin-bottom:8px">🎓</div>
+  <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px">You've got this! Good luck tomorrow 🚀</div>
+  <div style="font-size:14px">CSE413 · Mobile Application Design · Daffodil International University</div>
+</div>
+
+<script>
+  // Highlight active nav link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 80) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+</body>
+</html>
