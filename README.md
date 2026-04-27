@@ -82,7 +82,7 @@ Simply visit: **[cse-413-diu.vercel.app](https://cse-413-diu.vercel.app)**
 
 1. **Clone or download the repository**
    ```bash
-   git clone [<repository-url>](https://github.com/jubairsiyum/CSE413-DIU.git)
+   git clone https://github.com/jubairsiyum/CSE413-DIU.git
    cd CSE413-DIU
    ```
 
